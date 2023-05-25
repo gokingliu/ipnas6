@@ -7,10 +7,8 @@ type Status struct {
 }
 
 var (
-	ResOk                        = Status{0, "Success"}
-	ResFail                      = Status{-1, ""}
-	InnerLoadYamlError           = Status{-100, "内部读取Yaml失败"}
-	InnerUnmarshalYamlError      = Status{-101, "内部解析Yaml失败"}
-	ClientPostParamsRequestError = Status{100, "The params of POST method only support map[string]interface{} type!"}
-	ClientGetQueryRequestError   = Status{101, "The params of GET method only support string type!"}
+	ResOk          = Status{0, "Success"}
+	ResFail        = Status{-1, ""}
+	JsonMarshalErr = Status{-100, "JSON 序列化出错"}
+	ClientIPError  = Status{100, "获取 IPv4 和 IPv6 失败"}
 )

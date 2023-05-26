@@ -1,42 +1,31 @@
 package service
 
 import (
-	"fmt"
 	"ipnas6/entity"
+	"ipnas6/logic"
 	"ipnas6/util"
 	"net/http"
 )
 
 func updateCFIPv6(res http.ResponseWriter, req *http.Request) {
-	token := util.LoaderGet("cloudflare.token")
-	zoneId := util.LoaderGet("cloudflare.zoneId")
-	uri := fmt.Sprintf("https://api.cloudflare.com/client/v4/zones/%s/dns_records", zoneId)
-	headers := make(map[string]string)
-	headers["Authorization"] = fmt.Sprintf("Bearer %s", token)
-	headers["Content-Type"] = "application/json"
+	IPMap := logic.GetIPLogic()
 
-	result, err := util.Get(uri, headers, nil)
-	if err != nil {
-		_ = util.JSONResponse(res, entity.ClientGetError, nil)
+	if IPMap["IPv6"] == "" {
+		_ = util.JSONResponse(res, entity.ClientIPError, nil)
 		return
 	}
 
-	var dnsId string
-	dnsStatus := result["success"].(bool)
-	dnsResult := result["result"].([]interface{})
-	if dnsStatus && len(dnsResult) > 0 {
-		fmt.Println(1111, dnsResult)
-		for _, dns := range dnsResult {
-			dnsMap := dns.(map[string]interface{})
-			if dnsMap["name"] == "router.crotaliu.top" {
-				fmt.Println(2222, dnsMap["id"])
-				dnsId = dnsMap["id"].(string)
-			}
-		}
-		_ = util.JSONResponse(res, entity.ResOk, dnsResult)
-	} else {
+	dnsId, err := logic.GetCloudflareDNSId()
+	if err != nil {
 		_ = util.JSONResponse(res, entity.ClientGetDNSError, nil)
+		return
 	}
 
-	fmt.Println(3333, dnsId)
+	result := logic.UpdateCloudflareDNS(dnsId, IPMap["IPv6"])
+
+	if result {
+		_ = util.JSONResponse(res, entity.ResOk, nil)
+	} else {
+		_ = util.JSONResponse(res, entity.ClientPutDNSError, nil)
+	}
 }

@@ -15,4 +15,5 @@ var (
 	ClientPostError   = Status{102, "客户端 Post 请求失败"}
 	ClientPutError    = Status{103, "客户端 Put 请求失败"}
 	ClientGetDNSError = Status{104, "获取 Cloudflare DNS 失败"}
+	ClientPutDNSError = Status{104, "更新 Cloudflare DNS 失败"}
 )

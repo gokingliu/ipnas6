@@ -9,6 +9,7 @@ import (
 var token = util.LoaderGet("cloudflare.token")
 var zoneId = util.LoaderGet("cloudflare.zoneId")
 var hostName = util.LoaderGet("cloudflare.hostName")
+var dnsIPv6 = ""
 
 var getUri = fmt.Sprintf("https://api.cloudflare.com/client/v4/zones/%s/dns_records", zoneId)
 var headers = make(map[string]string)
@@ -39,6 +40,9 @@ func GetCloudflareDNSId() (string, error) {
 }
 
 func UpdateCloudflareDNS(dnsId string, IPv6 string) bool {
+	if dnsIPv6 == IPv6 {
+		return false
+	}
 	headers["Authorization"] = fmt.Sprintf("Bearer %s", token)
 	headers["Content-Type"] = "application/json"
 	putUri := fmt.Sprintf("%s/%s", getUri, dnsId)
@@ -56,6 +60,10 @@ func UpdateCloudflareDNS(dnsId string, IPv6 string) bool {
 	}
 
 	dnsStatus := result["success"].(bool)
+
+	if dnsStatus {
+		dnsIPv6 = IPv6
+	}
 
 	return dnsStatus
 }

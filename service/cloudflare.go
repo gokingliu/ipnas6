@@ -17,8 +17,26 @@ func updateCFIPv6(res http.ResponseWriter, req *http.Request) {
 
 	result, err := util.Get(uri, headers, nil)
 	if err != nil {
-		fmt.Println("111")
+		_ = util.JSONResponse(res, entity.ClientGetError, nil)
+		return
 	}
-	fmt.Println(result)
-	_ = util.JSONResponse(res, entity.ResOk, result)
+
+	var dnsId string
+	dnsStatus := result["success"].(bool)
+	dnsResult := result["result"].([]interface{})
+	if dnsStatus && len(dnsResult) > 0 {
+		fmt.Println(1111, dnsResult)
+		for _, dns := range dnsResult {
+			dnsMap := dns.(map[string]interface{})
+			if dnsMap["name"] == "router.crotaliu.top" {
+				fmt.Println(2222, dnsMap["id"])
+				dnsId = dnsMap["id"].(string)
+			}
+		}
+		_ = util.JSONResponse(res, entity.ResOk, dnsResult)
+	} else {
+		_ = util.JSONResponse(res, entity.ClientGetDNSError, nil)
+	}
+
+	fmt.Println(3333, dnsId)
 }

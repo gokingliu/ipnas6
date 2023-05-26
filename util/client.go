@@ -33,7 +33,12 @@ func handleUriValues(args map[string]interface{}) string {
 }
 
 func handleRequest(method string, uri string, headers map[string]string, body *bytes.Reader) *http.Request {
-	request, _ := http.NewRequest(method, uri, body)
+	var request *http.Request
+	if method == http.MethodGet {
+		request, _ = http.NewRequest(method, uri, nil)
+	} else {
+		request, _ = http.NewRequest(method, uri, body)
+	}
 	request.Header.Add("Accept", "application/json")
 	for header := range headers {
 		request.Header.Add(header, headers[header])

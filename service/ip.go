@@ -8,12 +8,12 @@ import (
 )
 
 func getIP(res http.ResponseWriter, req *http.Request) {
-	IP := logic.GetIPLogic()
+	IPMap := logic.GetIPLogic()
 
-	if IP["IPv4"] == "" && IP["IPv6"] == "" {
+	if IPMap["IPv4"] == "" && IPMap["IPv6"] == "" {
 		_ = util.JSONResponse(res, entity.ClientIPError, nil)
 		return
 	}
 
-	_ = util.JSONResponse(res, entity.ResOk, IP)
+	_ = util.JSONResponse(res, entity.ResOk, IPMap)
 }

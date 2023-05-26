@@ -32,9 +32,12 @@ func handleUriValues(args map[string]interface{}) string {
 	return ""
 }
 
-func handleRequest(method string, uri string, body *bytes.Reader) *http.Request {
+func handleRequest(method string, uri string, headers map[string]string, body *bytes.Reader) *http.Request {
 	request, _ := http.NewRequest(method, uri, body)
 	request.Header.Add("Accept", "application/json")
+	for header := range headers {
+		request.Header.Add(header, headers[header])
+	}
 
 	return request
 }
@@ -59,9 +62,9 @@ func handleResponse(request *http.Request) (map[string]interface{}, error) {
 	return data, nil
 }
 
-func Get(uri string, args map[string]interface{}) (map[string]interface{}, error) {
+func Get(uri string, headers map[string]string, args map[string]interface{}) (map[string]interface{}, error) {
 	uri = uri + handleUriValues(args)
-	request := handleRequest("get", uri, nil)
+	request := handleRequest(http.MethodGet, uri, headers, nil)
 
 	res, err := handleResponse(request)
 	if err != nil {
@@ -71,9 +74,21 @@ func Get(uri string, args map[string]interface{}) (map[string]interface{}, error
 	return res, nil
 }
 
-func Post(uri string, args map[string]interface{}) (map[string]interface{}, error) {
+func Post(uri string, headers map[string]string, args map[string]interface{}) (map[string]interface{}, error) {
 	marshal, _ := json.Marshal(args)
-	request := handleRequest("post", uri, bytes.NewReader(marshal))
+	request := handleRequest(http.MethodPost, uri, headers, bytes.NewReader(marshal))
+
+	res, err := handleResponse(request)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
+func Put(uri string, headers map[string]string, args map[string]interface{}) (map[string]interface{}, error) {
+	marshal, _ := json.Marshal(args)
+	request := handleRequest(http.MethodPut, uri, headers, bytes.NewReader(marshal))
 
 	res, err := handleResponse(request)
 	if err != nil {

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # 后端服务文件
 BACKEND_FILE=/app/ipnas6

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-chown -R ${PUID}:${PGID} /opt/alist/
+chown -R ${PUID}:${PGID} /app/
 
 umask ${UMASK}
 

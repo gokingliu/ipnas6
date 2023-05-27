@@ -1,5 +1,5 @@
 # 指定基础镜像
-FROM alpine:latest
+FROM alpine:3.17
 
 # 复制执行文件
 COPY app /app/

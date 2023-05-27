@@ -62,7 +62,7 @@ git clone git@github.com:gokingliu/ipnas6.git
 echo "********** 第 3 步：打包服务端 **********"
 cd ipnas6
 git pull
-CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build
+CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build
 cp ipnas6 app/
 
 echo "********** 第 4 步：清理旧镜像 **********"
@@ -70,11 +70,11 @@ docker image rm ipnas6:1
 
 echo "********** 第 5 步：打包新镜像 **********"
 chmod a+x app/*
-docker build -t ipnas6:1 .
+docker build --platform=linux/arm64 -t ipnas6:1 .
 
 echo "********** 第 6 步：推送镜像 **********"
-docker tag ipnas6:1 crotaliu/ipnas6:amd64
-docker push crotaliu/ipnas6:amd64
+docker tag ipnas6:1 crotaliu/ipnas6:arm64
+docker push crotaliu/ipnas6:arm64
 
 echo "********** 结束 **********"
 ```

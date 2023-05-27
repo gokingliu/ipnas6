@@ -1,7 +1,7 @@
-#!/bin/sh
+#!/bin/bash
 
-# 后端服务文件
-BACKEND_FILE=/app/ipnas6
+chown -R ${PUID}:${PGID} /opt/alist/
 
-# 启动后端服务
-nohup ${BACKEND_FILE} > /dev/null 2>&1 &
+umask ${UMASK}
+
+exec su-exec ${PUID}:${PGID} /app/ipnas6 > /dev/null 2>&1 &

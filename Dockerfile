@@ -5,4 +5,4 @@ FROM alpine:3.17
 COPY app /app/
 
 # 执行脚本
-ENTRYPOINT ["/app/entrypoint.sh"]
+CMD ["/app/entrypoint.sh"]
